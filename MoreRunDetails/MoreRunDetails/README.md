@@ -1,31 +1,38 @@
-# MoreRunDetails
+# Better Scout Report
 
-Describe your project here!
+## Overview
 
-## Template Instructions
+This mod enhances the end-of-run Scout Report by adding additional information and a redesigned UI. The goal is to provide clearer, more transparent run data that can be easily shared or reviewed after a run.
 
-You can remove this section after you've set up your project.
+## Features
 
-Next steps:
+### Better Scout Report UI
 
-- Create a copy of the `Config.Build.user.props.template` file and name it `Config.Build.user.props`
-  - This will automate copying your plugin assembly to `BepInEx/plugins/`
-  - Configure the paths to point to your game path and your `BepInEx/plugins/`
-  - Game assembly references should work if the path to the game is valid
-- Search `TODO` in the whole project to see what you should configure or modify
+* Replaces the default Scout Report screen shown at the end of a run with a redesigned interface.
+* Presents information in a clearer and more readable layout.
 
-### Thunderstore Packaging
+### Ascent Tracking
 
-This template comes with Thunderstore packaging built-in, using [TCLI](<https://github.com/thunderstore-io/thunderstore-cli>).
+* Displays the selected Ascent level directly on the Scout Report.
+* Makes it clear which Ascent was used for the run, allowing screenshots to accurately reflect the run’s difficulty.
 
-You can build Thunderstore packages by running:
+### Biome Progress Tracking
 
-```sh
-dotnet build -c Release -target:PackTS -v d
-```
+* Tracks when each biome is completed.
+* Adds a **Campfire** section to the report to indicate biome transitions.
+* Includes a **Time Spent** breakdown showing how long was spent in each section of the run.
 
-> [!NOTE]  
-> You can learn about different build options with `dotnet build --help`.  
-> `-c` is short for `--configuration` and `-v d` is `--verbosity detailed`.
+### Configurable Keybind
 
-The built package will be found at `artifacts/thunderstore/`.
+* Includes a configurable keybind (default: `G`).
+* Changing the keybind automatically updates the UI to reflect the new input.
+
+## Contributors
+
+<details>
+<summary>@atomictyler (Atomic)</summary>
+
+* UI design and implementation
+* Mod creation and core functionality
+
+</details>

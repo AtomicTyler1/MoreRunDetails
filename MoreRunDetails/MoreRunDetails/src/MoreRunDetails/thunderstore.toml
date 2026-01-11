@@ -7,8 +7,8 @@ repository = "https://thunderstore.io"
 [package]
 namespace = "AtomicStudio"
 name = "MoreRunDetails"
-description = "TODO: Fill in short mod description."
-websiteUrl = "" # TODO: Add a link to your mod repository here (optional)
+description = "Gives a detailed timer to the end game UI."
+websiteUrl = "https://github.com/AtomicTyler1/MoreRunDetails"
 containsNsfwContent = false
 
 [package.dependencies]

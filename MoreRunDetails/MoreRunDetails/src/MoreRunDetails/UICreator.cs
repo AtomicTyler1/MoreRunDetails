@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Photon.Pun.Demo.PunBasics;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -72,6 +73,30 @@ namespace MoreRunDetails
             tmp_keybind.fontSizeMin = 250;
             tmp_keybind.fontSizeMax = 250;
             tmp_keybind.fontSize = 250;
+
+            GameObject currentAscentObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
+            currentAscentObj.name = "MoreDetailsAscent";
+            currentAscentObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition - new Vector3(0f, 15f, 0f);
+            currentAscentObj.transform.localScale = SCOUTING_REPORT.transform.localScale;
+
+            GameObject.Destroy(currentAscentObj.GetComponent<LocalizedText>());
+
+            TextMeshProUGUI currentAscentText = currentAscentObj.GetComponent<TextMeshProUGUI>();
+
+            var AscentDisplay = "PEAK (ASCENT 0)";
+            if (Ascents.currentAscent < 0)
+            {
+                AscentDisplay = "TENDERFOOT";
+            }
+            else if (Ascents.currentAscent > 0)
+            {
+                AscentDisplay = $"ASCENT {Ascents.currentAscent}";
+            }
+
+            currentAscentText.text = AscentDisplay;
+            currentAscentText.fontSizeMin = 16;
+            currentAscentText.fontSizeMax = 16;
+            currentAscentText.fontSize = 16;
 
             // Create Pages (these will call TrackObject internally)
             GameObject titleExited = CreatePage(__instance, "Exited", baseOffset, "CAMPFIRE", BG, panel, SCOUTING_REPORT);

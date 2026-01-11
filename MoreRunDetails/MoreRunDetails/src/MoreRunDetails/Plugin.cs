@@ -73,7 +73,7 @@ namespace MoreRunDetails
                     segment = currentSegment,
                     time = currentTime,
                     duration = duration,
-                    died = !__instance.peakBanner.activeSelf
+                    died = !Character.localCharacter.refs.stats.won
                 });
 
                 Plugin.Log.LogInfo($"{currentSegment} tracking the stats.");
