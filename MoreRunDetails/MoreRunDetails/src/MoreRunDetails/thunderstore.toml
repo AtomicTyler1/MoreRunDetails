@@ -6,7 +6,7 @@ repository = "https://thunderstore.io"
 
 [package]
 namespace = "AtomicStudio"
-name = "MoreRunDetails"
+name = "BetterScoutReport"
 description = "Gives a detailed timer to the end game UI."
 websiteUrl = "https://github.com/AtomicTyler1/MoreRunDetails"
 containsNsfwContent = false
