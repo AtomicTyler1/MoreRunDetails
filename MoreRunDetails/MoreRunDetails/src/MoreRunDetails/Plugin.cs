@@ -91,6 +91,9 @@ namespace MoreRunDetails
 
             float currentTime = RunManager.Instance.timeSinceRunStarted;
 
+            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment || s.segment == nextSegment);
+            if (alreadyTracked) { return; }
+
             float totalPreviousDuration = Plugin.sectionTimes.Sum(s => s.duration);
             float duration = currentTime - totalPreviousDuration;
 

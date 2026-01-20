@@ -1,3 +1,7 @@
+# v0.1.6 - Bug Fix
+
+- 2 People calling Light Campfire at the same time would cause a duplicate entry, this has hopefully been fixed. Ping @atomictyler on the PEAK or PEAK Modding discord if you still have this bug.
+
 # v0.1.5 - Icon Fix
 
 - Accidentally forgot to change the default icon.
