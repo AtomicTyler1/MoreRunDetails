@@ -1,3 +1,11 @@
+# 0.2.0 - Configs and more additions
+
+- The timeline title also looks like the following:
+    - `TIMELINE (DAY: 5) (Level_13)`, obviously with the values substituted
+- 2 new configs!
+    - Show Current Ascent (Default: true), hides if the run was tenderfoot or peak or ascent *_*.
+   - Show Day and Level (Default: true), setting this to false will not show this new UI, this will fix localization and return back to your language for the TIMELINE text, or just disable if its too much clutter.
+
 # v0.1.6 - Bug Fix
 
 - 2 People calling Light Campfire at the same time would cause a duplicate entry, this has hopefully been fixed. Ping @atomictyler on the PEAK or PEAK Modding discord if you still have this bug.

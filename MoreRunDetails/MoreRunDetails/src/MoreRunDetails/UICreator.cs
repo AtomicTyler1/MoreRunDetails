@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 namespace MoreRunDetails
@@ -40,7 +41,6 @@ namespace MoreRunDetails
         {
             Plugin.Log.LogInfo("Creating custom end screen UI.");
 
-            // FIX: Clear lists BEFORE tracking anything new
             uiParts.Clear();
             originalPositions.Clear();
 
@@ -49,7 +49,15 @@ namespace MoreRunDetails
             var SCOUTING_REPORT = __instance.transform.Find("Panel/Margin/SCOUTING_REPORT").gameObject;
             var panel = __instance.transform.Find("Panel");
 
-            // Instantiate and Track the Master Hole Punch
+            if (Plugin.showDayAndLevel.Value)
+            {
+                var timelineTitle = __instance.transform.Find("Panel/Margin/Layout/Window_TIMELINE/Title").gameObject;
+
+                GameObject.Destroy(timelineTitle.GetComponent<LocalizedText>());
+                var timelineTitleText = timelineTitle.GetComponent<TextMeshProUGUI>();
+                timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) ({SceneManager.GetActiveScene().name})";
+            }
+
             GameObject newHole = GameObject.Instantiate(HolePunch, HolePunch.transform.parent);
             newHole.name = "MoreDetailsHolePunch";
             newHole.transform.localPosition = new Vector3(221.4f, 0.1225f, 0f);
@@ -69,43 +77,44 @@ namespace MoreRunDetails
             GameObject.Destroy(keybindText.GetComponent<LocalizedText>());
             
             TextMeshProUGUI tmp_keybind = keybindText.GetComponent<TextMeshProUGUI>();
-            tmp_keybind.text = Plugin.Instance.toggleKeybind.Value.ToString();
+            tmp_keybind.text = Plugin.toggleKeybind.Value.ToString();
             tmp_keybind.fontSizeMin = 250;
             tmp_keybind.fontSizeMax = 250;
             tmp_keybind.fontSize = 250;
 
-            GameObject currentAscentObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
-            currentAscentObj.name = "MoreDetailsAscent";
-            currentAscentObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition - new Vector3(0f, 15f, 0f);
-            currentAscentObj.transform.localScale = SCOUTING_REPORT.transform.localScale;
-
-            GameObject.Destroy(currentAscentObj.GetComponent<LocalizedText>());
-
-            TextMeshProUGUI currentAscentText = currentAscentObj.GetComponent<TextMeshProUGUI>();
-
-            var AscentDisplay = "PEAK (ASCENT 0)";
-            if (Ascents.currentAscent < 0)
+            if (Plugin.showCurrentAscent.Value)
             {
-                AscentDisplay = "TENDERFOOT";
-            }
-            else if (Ascents.currentAscent > 0)
-            {
-                AscentDisplay = $"ASCENT {Ascents.currentAscent}";
+                GameObject currentAscentObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
+                currentAscentObj.name = "MoreDetailsAscent";
+                currentAscentObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition - new Vector3(0f, 15f, 0f);
+                currentAscentObj.transform.localScale = SCOUTING_REPORT.transform.localScale;
+
+                GameObject.Destroy(currentAscentObj.GetComponent<LocalizedText>());
+
+                TextMeshProUGUI currentAscentText = currentAscentObj.GetComponent<TextMeshProUGUI>();
+
+                var AscentDisplay = "PEAK (ASCENT 0)";
+                if (Ascents.currentAscent < 0)
+                {
+                    AscentDisplay = "TENDERFOOT";
+                }
+                else if (Ascents.currentAscent > 0)
+                {
+                    AscentDisplay = $"ASCENT {Ascents.currentAscent}";
+                }
+
+                currentAscentText.text = AscentDisplay;
+                currentAscentText.fontSizeMin = 16;
+                currentAscentText.fontSizeMax = 16;
+                currentAscentText.fontSize = 16;
             }
 
-            currentAscentText.text = AscentDisplay;
-            currentAscentText.fontSizeMin = 16;
-            currentAscentText.fontSizeMax = 16;
-            currentAscentText.fontSize = 16;
-
-            // Create Pages (these will call TrackObject internally)
             GameObject titleExited = CreatePage(__instance, "Exited", baseOffset, "CAMPFIRE", BG, panel, SCOUTING_REPORT);
             PopulateEntries(titleExited, useTotalTime: true);
 
             GameObject titleSpent = CreatePage(__instance, "Spent", baseOffset + verticalPageOffset, "TIME SPENT", BG, panel, SCOUTING_REPORT);
             PopulateEntries(titleSpent, useTotalTime: false);
 
-            // Set initial state to hidden (offset to the right)
             foreach (var part in uiParts)
             {
                 if (part != null)
@@ -129,7 +138,7 @@ namespace MoreRunDetails
         private static IEnumerator TweenIndividualParts()
         {
             float elapsed = 0;
-            float duration = 1.0f; // Roughly 1 second based on lerp logic
+            float duration = 1.0f;
 
             while (elapsed < duration)
             {
@@ -143,7 +152,6 @@ namespace MoreRunDetails
                     Vector3 visiblePos = originalPositions[part];
                     Vector3 targetPos = isVisible ? visiblePos : hiddenPos;
 
-                    // Smooth Lerp towards target
                     part.transform.localPosition = Vector3.Lerp(
                         part.transform.localPosition,
                         targetPos,
@@ -153,7 +161,6 @@ namespace MoreRunDetails
                 yield return null;
             }
 
-            // Final snap to target for precision
             foreach (var part in uiParts)
             {
                 if (part == null) continue;

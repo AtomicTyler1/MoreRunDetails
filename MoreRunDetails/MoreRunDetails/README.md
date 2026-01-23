@@ -16,6 +16,11 @@ This mod enhances the end-of-run Scout Report by adding additional information a
 * Displays the selected Ascent level directly on the Scout Report.
 * Makes it clear which Ascent was used for the run, allowing screenshots to accurately reflect the run’s difficulty.
 
+### Current Day and Level UI
+
+* Shows on what day you reached the peak
+* Also shows what level you are on, e.g `(Level_13)`
+
 ### Biome Progress Tracking
 
 * Tracks when each biome is completed.

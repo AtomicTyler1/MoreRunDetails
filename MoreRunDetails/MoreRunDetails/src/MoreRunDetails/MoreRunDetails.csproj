@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.atomic.details</AssemblyName>
     <AssemblyTitle>MoreRunDetails</AssemblyTitle>
-    <Version>0.1.6</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
 </Project>
