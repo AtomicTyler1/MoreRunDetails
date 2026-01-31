@@ -123,6 +123,8 @@ namespace MoreRunDetails
                 }
             }
             isVisible = false;
+
+            if (Plugin.autoOpen.Value) ToggleUI();
         }
 
         public static void ToggleUI()

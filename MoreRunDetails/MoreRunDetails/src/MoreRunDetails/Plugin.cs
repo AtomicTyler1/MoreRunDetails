@@ -23,6 +23,7 @@ namespace MoreRunDetails
         public static ConfigEntry<KeyCode> toggleKeybind;
         public static ConfigEntry<bool> showDayAndLevel;
         public static ConfigEntry<bool> showCurrentAscent;
+        public static ConfigEntry<bool> autoOpen;
 
         private void Awake()
         {
@@ -32,6 +33,7 @@ namespace MoreRunDetails
             harmony.PatchAll();
             Log.LogInfo($"Plugin {Name} is loaded!");
 
+            autoOpen = Config.Bind("General", "Auto Open UI", false, "Automatically open the UI when the end screen is shown.");
             toggleKeybind = Config.Bind("General", "Toggle Keybind", KeyCode.G, "Click this button to toggle the UI into view. (ONLY VISIBLE ON THE SCOUT REPORT)");
             showDayAndLevel = Config.Bind("General", "Show Day and Level", true, "Show the current Day and Level on the UI, this is shown next to the timeline title.");
             showCurrentAscent = Config.Bind("General", "Show Current Ascent", true, "Show the current Ascent on the UI, this is shown just below the scout report.");

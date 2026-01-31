@@ -1,3 +1,7 @@
+# v0.2.1 - New config
+
+- A new config has been added to automatically open the UI, this is false by default so make sure you toggle it if you want it!
+
 # 0.2.0 - Configs and more additions
 
 - The timeline title also looks like the following:
