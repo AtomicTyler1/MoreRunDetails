@@ -1,3 +1,9 @@
+# v0.2.2 - Terrain Randomiser support
+
+- If you had a run with terrain randomiser enabled, it will now accurately display you used it in the report.
+- New config which is off by default
+    - You can chose to display the seed you had as well in the report. I know this can take a lot of space and have therefore disabled it by default
+
 # v0.2.1 - New config
 
 - A new config has been added to automatically open the UI, this is false by default so make sure you toggle it if you want it!

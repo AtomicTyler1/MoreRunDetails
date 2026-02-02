@@ -32,6 +32,11 @@ This mod enhances the end-of-run Scout Report by adding additional information a
 * Includes a configurable keybind (default: `G`).
 * Changing the keybind automatically updates the UI to reflect the new input.
 
+### Terrain Randomiser Support
+
+* Detection of terrain randomiser and will display that info correctly
+* Optional config to display the current seed.
+
 ## Contributors
 
 <details>

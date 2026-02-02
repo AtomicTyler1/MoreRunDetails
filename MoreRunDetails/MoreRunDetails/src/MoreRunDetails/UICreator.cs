@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +38,12 @@ namespace MoreRunDetails
             isVisible = false;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool CheckRandomiserSettings()
+        {
+            return TerrainRandomiser.Plugin.Instance && TerrainRandomiser.Plugin.Instance.mapSettings.enableRandomiser;
+        }
+
         public static void CreateOrUpdate(EndScreen __instance)
         {
             Plugin.Log.LogInfo("Creating custom end screen UI.");
@@ -55,7 +62,21 @@ namespace MoreRunDetails
 
                 GameObject.Destroy(timelineTitle.GetComponent<LocalizedText>());
                 var timelineTitleText = timelineTitle.GetComponent<TextMeshProUGUI>();
-                timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) ({SceneManager.GetActiveScene().name})";
+                if (Plugin.hasTerrainRandomiser && CheckRandomiserSettings())
+                {
+                    if (Plugin.terrainRandomiserSeed.Value)
+                    {
+                        timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER SEED: {TerrainRandomiser.Plugin.Instance.mapSettings.seed})";
+                    }
+                    else
+                    {
+                        timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER)";
+                    }
+                }
+                else
+                {
+                    timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) ({SceneManager.GetActiveScene().name})";
+                }
             }
 
             GameObject newHole = GameObject.Instantiate(HolePunch, HolePunch.transform.parent);

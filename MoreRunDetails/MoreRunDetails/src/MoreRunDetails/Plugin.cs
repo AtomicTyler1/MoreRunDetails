@@ -1,5 +1,6 @@
 ﻿using AsmResolver.DotNet.Serialized;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -11,7 +12,9 @@ using UnityEngine.SceneManagement;
 
 namespace MoreRunDetails
 {
+
     [BepInAutoPlugin]
+    [BepInDependency("com.snosz.terrainrandomiser", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class Plugin : BaseUnityPlugin
     {
         internal static ManualLogSource Log { get; private set; } = null!;
@@ -24,6 +27,9 @@ namespace MoreRunDetails
         public static ConfigEntry<bool> showDayAndLevel;
         public static ConfigEntry<bool> showCurrentAscent;
         public static ConfigEntry<bool> autoOpen;
+        public static ConfigEntry<bool> terrainRandomiserSeed;
+
+        public static bool hasTerrainRandomiser = false; 
 
         private void Awake()
         {
@@ -37,6 +43,9 @@ namespace MoreRunDetails
             toggleKeybind = Config.Bind("General", "Toggle Keybind", KeyCode.G, "Click this button to toggle the UI into view. (ONLY VISIBLE ON THE SCOUT REPORT)");
             showDayAndLevel = Config.Bind("General", "Show Day and Level", true, "Show the current Day and Level on the UI, this is shown next to the timeline title.");
             showCurrentAscent = Config.Bind("General", "Show Current Ascent", true, "Show the current Ascent on the UI, this is shown just below the scout report.");
+            terrainRandomiserSeed = Config.Bind("General", "Show Terrain Randomiser Seed", false, "Show the Terrain Randomiser Seed on the UI, if Terrain Randomiser is installed.");
+
+            hasTerrainRandomiser = Chainloader.PluginInfos.ContainsKey("com.snosz.terrainrandomiser");
         }
 
         private void Update()
