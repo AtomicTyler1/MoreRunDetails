@@ -1,3 +1,7 @@
+# v0.2.3 - SORRY!!!
+
+- Fixed a bug where UI would break on the end screen if you didn't have randomised terrain
+
 # v0.2.2 - Terrain Randomiser support
 
 - If you had a run with terrain randomiser enabled, it will now accurately display you used it in the report.

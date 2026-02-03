@@ -44,6 +44,16 @@ namespace MoreRunDetails
             return TerrainRandomiser.Plugin.Instance && TerrainRandomiser.Plugin.Instance.mapSettings.enableRandomiser;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static string GetRandomiserText()
+        {
+            if (Plugin.terrainRandomiserSeed.Value)
+            {
+                return $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER SEED: {TerrainRandomiser.Plugin.Instance.mapSettings.seed})";
+            }
+            return $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER)";
+        }
+
         public static void CreateOrUpdate(EndScreen __instance)
         {
             Plugin.Log.LogInfo("Creating custom end screen UI.");
@@ -64,14 +74,7 @@ namespace MoreRunDetails
                 var timelineTitleText = timelineTitle.GetComponent<TextMeshProUGUI>();
                 if (Plugin.hasTerrainRandomiser && CheckRandomiserSettings())
                 {
-                    if (Plugin.terrainRandomiserSeed.Value)
-                    {
-                        timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER SEED: {TerrainRandomiser.Plugin.Instance.mapSettings.seed})";
-                    }
-                    else
-                    {
-                        timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) (TERRAIN RANDOMISER)";
-                    }
+                    timelineTitleText.text = GetRandomiserText();
                 }
                 else
                 {
