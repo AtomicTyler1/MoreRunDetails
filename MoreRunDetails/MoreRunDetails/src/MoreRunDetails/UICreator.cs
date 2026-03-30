@@ -81,6 +81,44 @@ namespace MoreRunDetails
                     timelineTitleText.text = $"TIMELINE (DAY: {DayNightManager.instance.dayCount}) ({SceneManager.GetActiveScene().name})";
                 }
             }
+            
+            if (Plugin.showCurrentAscent.Value)
+            {
+                GameObject currentAscentObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
+                currentAscentObj.name = "MoreDetailsAscent";
+                currentAscentObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition - new Vector3(0f, 15f, 0f);
+                currentAscentObj.transform.localScale = SCOUTING_REPORT.transform.localScale;
+
+                GameObject.Destroy(currentAscentObj.GetComponent<LocalizedText>());
+
+                TextMeshProUGUI currentAscentText = currentAscentObj.GetComponent<TextMeshProUGUI>();
+
+                var AscentDisplay = "PEAK (ASCENT 0)";
+                if (Ascents.currentAscent < 0)
+                {
+                    AscentDisplay = "TENDERFOOT";
+                }
+                else if (Ascents.currentAscent > 0)
+                {
+                    AscentDisplay = $"ASCENT {Ascents.currentAscent}";
+                }
+
+                if (RunSettings.isMiniRun)
+                {
+                    AscentDisplay = "MINI RUN";
+                }
+                else if (RunSettings._isCustomRun)
+                {
+                    AscentDisplay = "CUSTOM RUN";
+                }
+
+                currentAscentText.text = AscentDisplay;
+                currentAscentText.fontSizeMin = 16;
+                currentAscentText.fontSizeMax = 16;
+                currentAscentText.fontSize = 16;
+            }
+            
+            if (RunSettings.isMiniRun) { return; }
 
             GameObject newHole = GameObject.Instantiate(HolePunch, HolePunch.transform.parent);
             newHole.name = "MoreDetailsHolePunch";
@@ -105,33 +143,6 @@ namespace MoreRunDetails
             tmp_keybind.fontSizeMin = 250;
             tmp_keybind.fontSizeMax = 250;
             tmp_keybind.fontSize = 250;
-
-            if (Plugin.showCurrentAscent.Value)
-            {
-                GameObject currentAscentObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
-                currentAscentObj.name = "MoreDetailsAscent";
-                currentAscentObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition - new Vector3(0f, 15f, 0f);
-                currentAscentObj.transform.localScale = SCOUTING_REPORT.transform.localScale;
-
-                GameObject.Destroy(currentAscentObj.GetComponent<LocalizedText>());
-
-                TextMeshProUGUI currentAscentText = currentAscentObj.GetComponent<TextMeshProUGUI>();
-
-                var AscentDisplay = "PEAK (ASCENT 0)";
-                if (Ascents.currentAscent < 0)
-                {
-                    AscentDisplay = "TENDERFOOT";
-                }
-                else if (Ascents.currentAscent > 0)
-                {
-                    AscentDisplay = $"ASCENT {Ascents.currentAscent}";
-                }
-
-                currentAscentText.text = AscentDisplay;
-                currentAscentText.fontSizeMin = 16;
-                currentAscentText.fontSizeMax = 16;
-                currentAscentText.fontSize = 16;
-            }
 
             GameObject titleExited = CreatePage(__instance, "Exited", baseOffset, "CAMPFIRE", BG, panel, SCOUTING_REPORT);
             PopulateEntries(titleExited, useTotalTime: true);

@@ -15,6 +15,7 @@ This mod enhances the end-of-run Scout Report by adding additional information a
 
 * Displays the selected Ascent level directly on the Scout Report.
 * Makes it clear which Ascent was used for the run, allowing screenshots to accurately reflect the run’s difficulty.
+* If in a Mini Run or Custom Run, it will say so here!
 
 ### Current Day and Level UI
 
@@ -35,7 +36,7 @@ This mod enhances the end-of-run Scout Report by adding additional information a
 ### Terrain Randomiser Support
 
 * Detection of terrain randomiser and will display that info correctly
-* Optional config to display the current seed.
+* Config to display the current seed which is default to true. If it is too long for you disable it!
 
 ## Contributors
 

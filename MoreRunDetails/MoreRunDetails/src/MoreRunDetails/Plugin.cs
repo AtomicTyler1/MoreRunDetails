@@ -43,7 +43,7 @@ namespace MoreRunDetails
             toggleKeybind = Config.Bind("General", "Toggle Keybind", KeyCode.G, "Click this button to toggle the UI into view. (ONLY VISIBLE ON THE SCOUT REPORT)");
             showDayAndLevel = Config.Bind("General", "Show Day and Level", true, "Show the current Day and Level on the UI, this is shown next to the timeline title.");
             showCurrentAscent = Config.Bind("General", "Show Current Ascent", true, "Show the current Ascent on the UI, this is shown just below the scout report.");
-            terrainRandomiserSeed = Config.Bind("General", "Show Terrain Randomiser Seed", false, "Show the Terrain Randomiser Seed on the UI, if Terrain Randomiser is installed.");
+            terrainRandomiserSeed = Config.Bind("General", "Show Terrain Randomiser Seed", true, "Show the Terrain Randomiser Seed on the UI, if Terrain Randomiser is installed.");
 
             hasTerrainRandomiser = Chainloader.PluginInfos.ContainsKey("com.snosz.terrainrandomiser");
         }
@@ -111,6 +111,8 @@ namespace MoreRunDetails
 
             float totalPreviousDuration = Plugin.sectionTimes.Sum(s => s.duration);
             float duration = currentTime - totalPreviousDuration;
+            
+            if (RunSettings.isMiniRun) { return; }
 
             Plugin.sectionTimes.Add(new SegmentInfo
             {

@@ -1,3 +1,15 @@
+# v0.2.5 - PEAK Update compatibility
+
+- Luckily the mod survived the update, but there are some features I wanted changed in the mod for it!
+- When in a `Mini Run`, The right hand side tracker will not be shown, this is because you only enter 1 biome! The Ascent text is also replaced
+- If you are not in a Mini Run but are in a `Custom Run`, the end screen will be mostly the same but the Ascent text will display the fact you are in a Custom Run
+
+# v0.2.4 - Speedrun Misc
+
+- Changed the `Show Terrain Randomiser Seed` is now set to `true` by default if the mod is installed.
+
+> This is for the **Speedrunning Community** who are soon moving to make this mod manditory.
+
 # v0.2.3 - SORRY!!!
 
 - Fixed a bug where UI would break on the end screen if you didn't have randomised terrain
