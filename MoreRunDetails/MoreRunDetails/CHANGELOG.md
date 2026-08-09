@@ -1,3 +1,7 @@
+# v0.2.6 - PEAK Update
+
+- Made the Better scout report work with the Gloom, Citadel and **[???]**
+
 # v0.2.5 - PEAK Update compatibility
 
 - Luckily the mod survived the update, but there are some features I wanted changed in the mod for it!

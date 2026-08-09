@@ -1,10 +1,9 @@
-﻿using AsmResolver.DotNet.Serialized;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using System;
+using Peak;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -68,50 +67,17 @@ namespace MoreRunDetails
     [HarmonyPatch]
     public static partial class Patches
     {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(EndScreen), nameof(EndScreen.Awake))]
-        public static void EndScreenShown(EndScreen __instance)
+
+        public static void TrackSegment(Segment currentSegment)
         {
-            int currentSegmentInt = MapHandler.Instance.currentSegment;
-            Segment currentSegment = (Segment)currentSegmentInt;
-
-            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment);
-
-            if (!alreadyTracked)
-            {
-                float currentTime = RunManager.Instance.timeSinceRunStarted;
-                float totalPreviousDuration = Plugin.sectionTimes.Sum(s => s.duration);
-                float duration = currentTime - totalPreviousDuration;
-
-                Plugin.sectionTimes.Add(new SegmentInfo
-                {
-                    segment = currentSegment,
-                    time = currentTime,
-                    duration = duration,
-                    died = !Character.localCharacter.refs.stats.won
-                });
-
-                Plugin.Log.LogInfo($"{currentSegment} tracking the stats.");
-            }
-
-            UICreator.CreateOrUpdate(__instance);
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(Campfire), nameof(Campfire.Light_Rpc))]
-        public static void OnCampfireLight(Campfire __instance)
-        {
-            Segment nextSegment = __instance.advanceToSegment;
-            Segment currentSegment = nextSegment - 1;
-
             float currentTime = RunManager.Instance.timeSinceRunStarted;
 
-            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment || s.segment == nextSegment);
+            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment);
             if (alreadyTracked) { return; }
 
             float totalPreviousDuration = Plugin.sectionTimes.Sum(s => s.duration);
             float duration = currentTime - totalPreviousDuration;
-            
+
             if (RunSettings.isMiniRun) { return; }
 
             Plugin.sectionTimes.Add(new SegmentInfo
@@ -123,6 +89,62 @@ namespace MoreRunDetails
             });
 
             Plugin.Log.LogInfo($"{currentSegment} recorded: {duration}s (Total: {currentTime:F2}s)");
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(EndScreen), nameof(EndScreen.Awake))]
+        public static void EndScreenShown(EndScreen __instance)
+        {
+            int currentSegmentInt = MapHandler.Instance.currentSegment;
+            Segment currentSegment = (Segment)currentSegmentInt;
+
+            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment);
+
+            TrackSegment(currentSegment);
+
+            UICreator.CreateOrUpdate(__instance);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GUIManager), nameof(GUIManager.SetHeroTitle))]
+        public static void HeroTitleShown(GUIManager __instance, string text)
+        {
+            if (text.ToLower() == "peak")
+            {
+                var mapHandler = MapHandler.Instance;
+                Segment currentSegment = mapHandler.GetCurrentSegment();
+
+                TrackSegment(currentSegment);
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Action_WarpToBiome), nameof(Action_WarpToBiome.RunAction))]
+        public static void TeleportToNadir()
+        {
+            var mapHandler = MapHandler.Instance;
+            Segment currentSegment = mapHandler.GetCurrentSegment();
+
+            TrackSegment(currentSegment);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PeakGatePortal), nameof(PeakGatePortal.Interact_CastFinished))]
+        public static void PEAKGatePoralTrack(PeakGatePortal __instance, Character interactor)
+        {
+            var mapHandler = MapHandler.Instance;
+            Segment currentSegment = mapHandler.GetCurrentSegment();
+
+            TrackSegment(currentSegment);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Campfire), nameof(Campfire.Light_Rpc))]
+        public static void OnCampfireLight(Campfire __instance)
+        {
+            Segment nextSegment = __instance.advanceToSegment;
+            Segment currentSegment = nextSegment - 1;
+
+            TrackSegment(currentSegment);
         }
 
         [HarmonyPostfix]

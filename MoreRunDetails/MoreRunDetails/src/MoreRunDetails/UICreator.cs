@@ -1,7 +1,4 @@
-﻿using JetBrains.Annotations;
-using Photon.Pun.Demo.PunBasics;
-using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +6,19 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace MoreRunDetails
 {
     internal class UICreator
     {
-        // Tracking lists for individual animation
         private static List<GameObject> uiParts = new List<GameObject>();
         private static Dictionary<GameObject, Vector3> originalPositions = new Dictionary<GameObject, Vector3>();
 
         private static bool isVisible = false;
         private static Coroutine animationRoutine;
 
-        // Configuration
         private static float slideDistance = 700f;
-        private static float lerpSpeed = 8f; // Lowered for a slower, smoother slide
+        private static float lerpSpeed = 8f;
 
         private static Vector3 baseOffset = new Vector3(425, 115, 0);
         private static Vector3 verticalPageOffset = new Vector3(0, -230, 0);
@@ -211,14 +205,12 @@ namespace MoreRunDetails
         {
             Vector3 BGOffset = new Vector3(-105, 0, 0) + offset;
 
-            // Background
             GameObject newBG = GameObject.Instantiate(BG, panel);
             newBG.name = $"MoreDetailsBG_{suffix}";
             newBG.transform.localPosition = BG.transform.localPosition + BGOffset;
             newBG.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             TrackObject(newBG);
 
-            // Title
             GameObject newTitle = GameObject.Instantiate(SCOUTING_REPORT, panel);
             newTitle.name = $"MoreDetailsTitle_{suffix}";
             newTitle.transform.localPosition = SCOUTING_REPORT.transform.localPosition + offset + new Vector3(-95f, -90f, 0f);
@@ -245,7 +237,9 @@ namespace MoreRunDetails
                 if (entry.segment == Segment.Beach) displayName = "Shore";
                 else if (entry.segment == Segment.Tropics && runSegments.Any(s => s.biome.ToString() == "Roots")) displayName = "Roots";
                 else if (entry.segment == Segment.Alpine && runSegments.Any(s => s.biome.ToString() == "Mesa")) displayName = "Mesa";
-                else if (entry.segment == Segment.TheKiln && runSegments.Any(s => s.biome.ToString() == "Volcano")) displayName = "The Kiln";
+                else if (entry.segment == Segment.Caldera && runSegments.Any(s => s.biome.ToString() == "Swamp")) displayName = "Gloom";
+                else if (entry.segment == Segment.TheKiln && runSegments.Any(s => s.biome.ToString() == "Swamp")) displayName = "Citadel";
+                else if (entry.segment == Segment.Peak) displayName = "Nadir";
 
                 float timeToDisplay = useTotalTime ? entry.time : entry.duration;
                 TimeSpan t = TimeSpan.FromSeconds(timeToDisplay);
