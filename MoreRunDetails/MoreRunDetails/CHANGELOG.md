@@ -1,3 +1,9 @@
+# v0.2.7 - Save compatibility
+
+![Notice](https://notice-badges.atomictyler.dev/api/notice?type=warning&message=This+feature+only+works+for+runs+that+were+started+with+the+new+version+of+the+mod.+Meaning+existing+runs+will+not+show+the+times+if+they+were+started+on+an+old+version.&width=640&radius=8)
+
+- The mod now works when you load a saved game from a campfire.
+
 # v0.2.6 - PEAK Update
 
 - Made the Better scout report work with the Gloom, Citadel and **[???]**

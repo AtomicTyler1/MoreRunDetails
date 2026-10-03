@@ -3,15 +3,16 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using Newtonsoft.Json;
 using Peak;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MoreRunDetails
 {
-
     [BepInAutoPlugin]
     [BepInDependency("com.snosz.terrainrandomiser", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class Plugin : BaseUnityPlugin
@@ -28,7 +29,9 @@ namespace MoreRunDetails
         public static ConfigEntry<bool> autoOpen;
         public static ConfigEntry<bool> terrainRandomiserSeed;
 
-        public static bool hasTerrainRandomiser = false; 
+        public static bool hasTerrainRandomiser = false;
+
+        public static string ModSavePath => Path.Combine(Application.persistentDataPath, "betterscoutreport.json");
 
         private void Awake()
         {
@@ -67,7 +70,6 @@ namespace MoreRunDetails
     [HarmonyPatch]
     public static partial class Patches
     {
-
         public static void TrackSegment(Segment currentSegment)
         {
             float currentTime = RunManager.Instance.timeSinceRunStarted;
@@ -90,14 +92,13 @@ namespace MoreRunDetails
 
             Plugin.Log.LogInfo($"{currentSegment} recorded: {duration}s (Total: {currentTime:F2}s)");
         }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(EndScreen), nameof(EndScreen.Awake))]
         public static void EndScreenShown(EndScreen __instance)
         {
             int currentSegmentInt = MapHandler.Instance.currentSegment;
             Segment currentSegment = (Segment)currentSegmentInt;
-
-            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment);
 
             TrackSegment(currentSegment);
 
@@ -137,7 +138,7 @@ namespace MoreRunDetails
             TrackSegment(currentSegment);
         }
 
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(Campfire), nameof(Campfire.Light_Rpc))]
         public static void OnCampfireLight(Campfire __instance)
         {
@@ -151,7 +152,46 @@ namespace MoreRunDetails
         [HarmonyPatch(typeof(RunManager), nameof(RunManager.StartRun))]
         public static void OnRunStart(RunManager __instance)
         {
-            Plugin.sectionTimes.Clear();
+            try
+            {
+                if (Quicksave.ShouldUseSaveData)
+                {
+                    if (File.Exists(Plugin.ModSavePath))
+                    {
+                        string json = File.ReadAllText(Plugin.ModSavePath);
+                        var loadedTimes = JsonConvert.DeserializeObject<List<SegmentInfo>>(json);
+                        if (loadedTimes != null && loadedTimes.Count > 0)
+                        {
+                            Plugin.sectionTimes = loadedTimes;
+                            Plugin.Log.LogInfo($"Restored {loadedTimes.Count} saved segment(s):");
+                            foreach (var info in Plugin.sectionTimes)
+                            {
+                                Plugin.Log.LogInfo($"  * {info.segment}: Duration = {info.duration:F2}s (Total Run Time = {info.time:F2}s)");
+                            }
+                        }
+                        else
+                        {
+                            Plugin.Log.LogWarning($"Save file was found at '{Plugin.ModSavePath}' but contained no data.");
+                            Plugin.sectionTimes.Clear();
+                        }
+                    }
+                    else
+                    {
+                        Plugin.Log.LogWarning($"Loaded quicksave, but mod save file was missing at '{Plugin.ModSavePath}'. Starting with empty history.");
+                        Plugin.sectionTimes.Clear();
+                    }
+                }
+                else
+                {
+                    Plugin.Log.LogInfo("New run started. Cleared previous segment history.");
+                    Plugin.sectionTimes.Clear();
+                }
+            }
+            catch (System.Exception e)
+            {
+                Plugin.Log.LogError("Error handling run start save data: " + e.Message);
+                Plugin.sectionTimes.Clear();
+            }
 
             UICreator.ResetUI();
 
@@ -159,6 +199,40 @@ namespace MoreRunDetails
             foreach (var segment in MapHandler.Instance.segments)
             {
                 Plugin.Log.LogInfo($"Segment available: {segment.biome.ToString()}");
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Quicksave), nameof(Quicksave.SaveNow))]
+        public static void OnQuicksaveSave()
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(Plugin.sectionTimes);
+                File.WriteAllText(Plugin.ModSavePath, json);
+                Plugin.Log.LogInfo($"Wrote {Plugin.sectionTimes.Count} segment(s) to '{Plugin.ModSavePath}'.");
+            }
+            catch (System.Exception e)
+            {
+                Plugin.Log.LogError("Failed to save BetterScoutReport data: " + e.Message);
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Quicksave), nameof(Quicksave.DestroySaveData))]
+        public static void OnQuicksaveDestroy()
+        {
+            try
+            {
+                if (File.Exists(Plugin.ModSavePath))
+                {
+                    File.Delete(Plugin.ModSavePath);
+                    Plugin.Log.LogInfo("Deleted mod data file.");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Plugin.Log.LogError("Failed to delete BetterScoutReport data: " + e.Message);
             }
         }
     }

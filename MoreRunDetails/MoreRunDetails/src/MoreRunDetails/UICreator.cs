@@ -239,6 +239,7 @@ namespace MoreRunDetails
                 else if (entry.segment == Segment.Alpine && runSegments.Any(s => s.biome.ToString() == "Mesa")) displayName = "Mesa";
                 else if (entry.segment == Segment.Caldera && runSegments.Any(s => s.biome.ToString() == "Swamp")) displayName = "Gloom";
                 else if (entry.segment == Segment.TheKiln && runSegments.Any(s => s.biome.ToString() == "Swamp")) displayName = "Citadel";
+                else if (entry.segment == Segment.TheKiln && !runSegments.Any(s => s.biome.ToString() == "Swamp")) displayName = "Kiln";
                 else if (entry.segment == Segment.Peak) displayName = "Nadir";
 
                 float timeToDisplay = useTotalTime ? entry.time : entry.duration;
