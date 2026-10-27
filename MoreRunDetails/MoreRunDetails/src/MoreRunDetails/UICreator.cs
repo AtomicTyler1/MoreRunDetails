@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zorro.Core;
 
 namespace MoreRunDetails
 {
@@ -111,7 +112,21 @@ namespace MoreRunDetails
                 currentAscentText.fontSizeMax = 16;
                 currentAscentText.fontSize = 16;
             }
-            
+
+            GameObject versionObj = GameObject.Instantiate(SCOUTING_REPORT, SCOUTING_REPORT.transform.parent);
+            versionObj.name = "MoreDetailsVersionNumber";
+            versionObj.transform.localPosition = SCOUTING_REPORT.transform.localPosition + new Vector3(132f, -387f, 0f);
+            versionObj.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+            BuildVersion buildVersion = new BuildVersion(Application.version);
+            string gameVersion = string.IsNullOrEmpty(buildVersion.BuildName) ? $"v{buildVersion}" : buildVersion.ToString();
+            string modVersion = Plugin.Version;
+
+            GameObject.Destroy(versionObj.GetComponent<LocalizedText>());
+            TextMeshProUGUI versionText = versionObj.GetComponent<TextMeshProUGUI>();
+            versionText.text = $"GAME {gameVersion}  |  BSR {modVersion}";
+            versionText.alignment = TextAlignmentOptions.Right;
+
             if (RunSettings.isMiniRun) { return; }
 
             GameObject newHole = GameObject.Instantiate(HolePunch, HolePunch.transform.parent);

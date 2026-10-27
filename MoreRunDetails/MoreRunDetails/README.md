@@ -38,6 +38,13 @@ This mod enhances the end-of-run Scout Report by adding additional information a
 * Detection of terrain randomiser and will display that info correctly
 * Config to display the current seed which is default to true. If it is too long for you disable it!
 
+## Game version
+
+Displays the game and mod version, this is because speedrun moderators need to verify the game version but the devs removed it from showing in gameplay!
+It also shows the mod version.
+
+e.g `GAME vX.X.X  |  BSR vX.X.X`
+
 ## Contributors
 
 <details>

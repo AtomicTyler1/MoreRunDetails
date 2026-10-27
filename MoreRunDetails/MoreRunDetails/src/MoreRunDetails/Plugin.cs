@@ -41,7 +41,7 @@ namespace MoreRunDetails
             harmony.PatchAll();
             Log.LogInfo($"Plugin {Name} is loaded!");
 
-            autoOpen = Config.Bind("General", "Auto Open UI", false, "Automatically open the UI when the end screen is shown.");
+            autoOpen = Config.Bind("General", "Auto Open UI", true, "Automatically open the UI when the end screen is shown.");
             toggleKeybind = Config.Bind("General", "Toggle Keybind", KeyCode.G, "Click this button to toggle the UI into view. (ONLY VISIBLE ON THE SCOUT REPORT)");
             showDayAndLevel = Config.Bind("General", "Show Day and Level", true, "Show the current Day and Level on the UI, this is shown next to the timeline title.");
             showCurrentAscent = Config.Bind("General", "Show Current Ascent", true, "Show the current Ascent on the UI, this is shown just below the scout report.");
@@ -70,7 +70,7 @@ namespace MoreRunDetails
     [HarmonyPatch]
     public static partial class Patches
     {
-        public static void TrackSegment(Segment currentSegment)
+        public static void TrackSegment(Segment currentSegment, bool dead = false)
         {
             float currentTime = RunManager.Instance.timeSinceRunStarted;
 
@@ -87,7 +87,7 @@ namespace MoreRunDetails
                 segment = currentSegment,
                 time = currentTime,
                 duration = duration,
-                died = false,
+                died = dead,
             });
 
             Plugin.Log.LogInfo($"{currentSegment} recorded: {duration}s (Total: {currentTime:F2}s)");
@@ -100,7 +100,12 @@ namespace MoreRunDetails
             int currentSegmentInt = MapHandler.Instance.currentSegment;
             Segment currentSegment = (Segment)currentSegmentInt;
 
-            TrackSegment(currentSegment);
+            bool alreadyTracked = Plugin.sectionTimes.Any(s => s.segment == currentSegment);
+            if (!alreadyTracked)
+            {
+                bool dead = Player.localPlayer.character.data.dead;
+                TrackSegment(currentSegment, dead);
+            }
 
             UICreator.CreateOrUpdate(__instance);
         }
